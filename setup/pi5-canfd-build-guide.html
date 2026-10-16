@@ -168,6 +168,7 @@ sudo reboot</code></pre>
 <pre><code>ip -br link show | grep can_s           # can_s0 and can_s1 up/physical, can_s2-4 virtual
 ls /dev/mrccan/                         # enable interface files should be listed
 systemctl is-active can-bringup robot   # both should print "active"</code></pre>
+    <div class="note">The CAN setup scripts are untested on beta17. WPILib needs <code>can_s0</code>–<code>can_s4</code> <em>and</em> <code>can_d0</code>–<code>can_d19</code> to exist. If the robot program logs <code>ioctl(SIOCGIFINDEX) for CAN can_dX failed</code>, the image isn't creating the <code>can_d*</code> interfaces. Check with <code>ip -br link show | grep can_d</code>.</div>
   </li>
 
   <li>
