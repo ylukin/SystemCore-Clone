@@ -1,1 +1,27 @@
+# OS files
+.DS_Store
+._*
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.idea/
+*.iml
+*.swp
+*~
+
+# SD card images and archives (large, and may contain proprietary SystemCore software)
+*.img
+*.img.zip
+*.img.xz
+*.img.gz
+*.llupdate
 no-fd/bobcats-systemcore-nofd.img.zip
+
+# CANivore driver packages (download from ctre.download, see README)
+*.ipk
+
+# Robot project build output (each project also has its own WPILib .gitignore)
+.gradle/
+build/
+bin/
