@@ -127,8 +127,12 @@ grep -E '^(ssid|wpa_passphrase)=' /etc/hostapd.conf</code></pre>
   </li>
 
   <li>
-    <h3>Open the Terminal app</h3>
-    <p>It's in the web dashboard. The commands in steps 5 and 7 run here.</p>
+    <h3>Open a terminal on the Pi</h3>
+    <p>The commands in steps 5 and 7 run on the Pi. Use either of these:</p>
+    <ul>
+      <li><strong>Web terminal:</strong> open <a href="http://172.30.0.1:4901" target="_blank" rel="noopener">http://172.30.0.1:4901</a> (on the Pi's Wi-Fi) or <code>http://&lt;pi-ip-address&gt;:4901</code> (on Ethernet). The dashboard links to the same page from its "Terminal" app tile, which may not be on the main page.</li>
+      <li><strong>SSH:</strong> <code>ssh systemcore@172.30.0.1</code> (or the Pi's Ethernet IP), password <code>systemcore</code>. You need SSH anyway for the copy in step 6.</li>
+    </ul>
   </li>
 
   <li>
