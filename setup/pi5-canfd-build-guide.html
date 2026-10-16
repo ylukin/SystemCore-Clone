@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SystemCore Clone: Pi 5 + CAN FD Build Guide</title>
+<style>
+  :root {
+    --bg: #fafafa; --fg: #1d1d1f; --muted: #6b6b70; --card: #fff;
+    --border: #dcdce0; --accent: #0b5fff; --code-bg: #f0f0f3; --warn: #fff4d6; --warn-b: #e0b000;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141416; --fg: #ececee; --muted: #9a9aa2; --card: #1e1e22;
+      --border: #38383f; --accent: #6ea0ff; --code-bg: #26262b; --warn: #2e2810; --warn-b: #a38200;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  h2 { font-size: 1.2rem; margin: 36px 0 12px; }
+  p.sub { color: var(--muted); margin: 0 0 24px; }
+  a { color: var(--accent); }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 18px; margin: 12px 0;
+  }
+  ul.dl { list-style: none; padding: 0; margin: 0; }
+  ul.dl li { padding: 8px 0; border-bottom: 1px solid var(--border); }
+  ul.dl li:last-child { border-bottom: 0; }
+  ul.dl small { display: block; color: var(--muted); }
+  ol.steps { counter-reset: s; list-style: none; padding: 0; }
+  ol.steps > li {
+    counter-increment: s; position: relative;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 18px 14px 56px; margin: 12px 0;
+  }
+  ol.steps > li::before {
+    content: counter(s); position: absolute; left: 16px; top: 14px;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: #fff; font-weight: 600;
+    display: grid; place-items: center; font-size: .9rem;
+  }
+  ol.steps h3 { margin: 0 0 6px; font-size: 1.05rem; }
+  ol.steps p { margin: 6px 0; }
+  pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .88rem; }
+  code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+  pre {
+    background: var(--code-bg); padding: 10px 12px; border-radius: 8px;
+    overflow-x: auto; margin: 8px 0;
+  }
+  pre code { background: none; padding: 0; }
+  .note {
+    background: var(--warn); border-left: 4px solid var(--warn-b);
+    padding: 10px 14px; border-radius: 6px; margin: 12px 0; font-size: .95rem;
+  }
+  .where { color: var(--muted); font-size: .85rem; text-transform: uppercase; letter-spacing: .04em; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>SystemCore Clone: Pi 5 + CAN FD HAT</h1>
+<p class="sub">Build a custom SD card from the SystemCore base image. No Raspberry Pi OS needed.</p>
+
+<h2>1. Downloads</h2>
+<div class="card">
+  <ul class="dl">
+    <li>
+      <a href="https://www.raspberrypi.com/software/" target="_blank" rel="noopener">Raspberry Pi Imager</a>
+      <small>Flashes the SD card.</small>
+    </li>
+    <li>
+      <a href="https://github.com/LimelightVision/systemcore-os-public/releases" target="_blank" rel="noopener">SystemCore base image (Limelight releases)</a>
+      <small>Download the latest <code>.img</code> / <code>.img.xz</code> asset.</small>
+    </li>
+    <li>
+      <a href="https://ctre.download/files/systemcore/canivore-usb-kernel_1.18_aarch64.ipk">canivore-usb-kernel_1.18_aarch64.ipk</a>
+      <small>CANivore driver 1 of 2. Only needed if you use a CANivore.</small>
+    </li>
+    <li>
+      <a href="https://ctre.download/files/systemcore/canivore-usb_1.16_aarch64.ipk">canivore-usb_1.16_aarch64.ipk</a>
+      <small>CANivore driver 2 of 2. Only needed if you use a CANivore.</small>
+    </li>
+    <li>
+      <a href="https://github.com/wpilibsuite/allwpilib/releases/tag/v2027.0.0-alpha-6" target="_blank" rel="noopener">WPILib 2027.0.0-alpha-6</a>
+      <small>Needed later, to deploy robot code.</small>
+    </li>
+    <li>
+      <strong>This repo</strong> (cloned locally)
+      <small>You need <code>fd/config_with_fd.txt</code>, the <code>fd/systemcore-can-fd-setup/</code> folder, and <code>project_examples/</code>.</small>
+    </li>
+  </ul>
+</div>
+
+<h2>2. Steps</h2>
+<ol class="steps">
+
+  <li>
+    <h3>Flash the SD card</h3>
+    <p>In Raspberry Pi Imager: choose <strong>Raspberry Pi 5</strong>, then under OS pick <strong>Use custom</strong> and select the SystemCore base image. Pick your SD card and write it. Skip any OS customisation prompts.</p>
+  </li>
+
+  <li>
+    <h3>Boot the Pi</h3>
+    <p>Insert the SD card with the CAN FD HAT seated, power on, and wait about a minute.</p>
+  </li>
+
+  <li>
+    <h3>Join the Pi's Wi-Fi and open the dashboard</h3>
+    <p>Network <code>SYSTEMCORE</code>, password <code>PASSWORD</code> (upper case). Then open
+      <a href="http://172.30.0.1" target="_blank" rel="noopener">http://172.30.0.1</a> or
+      <a href="http://robot.local" target="_blank" rel="noopener">http://robot.local</a>.
+      These only load while you're on the Pi's network.</p>
+  </li>
+
+  <li>
+    <h3>Open the Terminal app</h3>
+    <p>It's in the web dashboard. The commands in steps 5 and 7 run here.</p>
+  </li>
+
+  <li>
+    <h3>Replace the boot partition's <code>config.txt</code></h3>
+    <p>This enables the HAT's two <code>mcp251xfd</code> CAN controllers.</p>
+<pre><code>sudo mkdir -p /mnt/hardware_boot
+sudo mount /dev/mmcblk0p2 /mnt/hardware_boot
+sudo nano /mnt/hardware_boot/config.txt</code></pre>
+    <p>Delete everything in the file, then paste the entire contents of <code>fd/config_with_fd.txt</code>. Save with <code>Ctrl+O</code>, <code>Enter</code>, <code>Ctrl+X</code>.</p>
+<pre><code>sudo umount /mnt/hardware_boot
+sudo reboot</code></pre>
+  </li>
+
+  <li>
+    <h3>Copy the installer to the Pi</h3>
+    <p class="where">Run on your computer, inside the repo's fd/ folder</p>
+<pre><code>scp -r systemcore-can-fd-setup systemcore@172.30.0.1:/home/systemcore/</code></pre>
+    <p>Default login is <code>systemcore</code> / <code>systemcore</code> (per the repo README).</p>
+  </li>
+
+  <li>
+    <h3>Run the installer</h3>
+    <p class="where">Run on the Pi (terminal app or SSH)</p>
+<pre><code>cd ~/systemcore-can-fd-setup
+sudo ./install.sh
+sudo reboot</code></pre>
+    <p>This installs <code>can-bringup.service</code>: on each boot it names the HAT buses <code>can_s0</code> and <code>can_s1</code> at 1 Mbit, creates <code>can_s2</code> to <code>can_s4</code> as virtual buses, and loads <code>robot_heartbeat</code>.</p>
+  </li>
+
+  <li>
+    <h3>Install the CANivore drivers (optional)</h3>
+    <p>In the web dashboard open the 4th tile and choose "add packages". Drag in
+      <a href="https://ctre.download/files/systemcore/canivore-usb-kernel_1.18_aarch64.ipk">canivore-usb-kernel</a>,
+      then <a href="https://ctre.download/files/systemcore/canivore-usb_1.16_aarch64.ipk">canivore-usb</a>,
+      then reboot.</p>
+    <div class="note">The repo says the correct order is unclear. If this order fails, try the reverse.</div>
+  </li>
+
+  <li>
+    <h3>Verify</h3>
+<pre><code>ip -br link show | grep can_s           # can_s0 and can_s1 up/physical, can_s2-4 virtual
+ls /dev/mrccan/                         # enable interface files should be listed
+systemctl is-active can-bringup robot   # both should print "active"</code></pre>
+  </li>
+
+  <li>
+    <h3>Update motor controller firmware</h3>
+    <p>In Phoenix Tuner X, connect to the robot and flash the <strong>2026</strong> Phoenix firmware. The repo says this is correct even though you're running 2027 alpha software.</p>
+  </li>
+
+  <li>
+    <h3>Deploy code</h3>
+    <p>Install <a href="https://github.com/wpilibsuite/allwpilib/releases/tag/v2027.0.0-alpha-6" target="_blank" rel="noopener">WPILib 2027.0.0-alpha-6</a>, open <code>project_examples/ctre/ctre-commands-v2</code> or <code>ctre-commands-v3</code>, and deploy as normal.</p>
+    <div class="note">Enable from the Driver Station's <strong>Enable</strong> button. Space and Enter are the e-stop and latch the robot disabled.</div>
+  </li>
+
+</ol>
+
+<h2>Repo inconsistencies to ignore</h2>
+<div class="card">
+  <ul>
+    <li><code>fd/systemcore-can-fd-setup/README.md</code> mentions MCP2515 chips and a folder named <code>systemcore-can-setup</code>. Your HAT uses MCP2517/2518FD chips and the folder is <code>systemcore-can-fd-setup</code>. The scripts and <code>config_with_fd.txt</code> are correct.</li>
+    <li>The "Getting Started" sections in <code>fd/README.md</code> describe the pre-built image path. Ignore them.</li>
+  </ul>
+</div>
+
+</main>
+</body>
+</html>
