@@ -116,10 +116,14 @@
 
   <li>
     <h3>Join the Pi's Wi-Fi and open the dashboard</h3>
-    <p>Network <code>SYSTEMCORE</code>, password <code>PASSWORD</code> (upper case). Then open
+    <p>On beta17 each Pi gets its own network: the name is <code>SYSTEMCORE-</code> plus a device-specific suffix (for example <code>SYSTEMCORE-F8B029D9</code>), with its own password. The old <code>SYSTEMCORE</code> / <code>PASSWORD</code> defaults no longer apply. Then open
       <a href="http://172.30.0.1" target="_blank" rel="noopener">http://172.30.0.1</a> or
       <a href="http://robot.local" target="_blank" rel="noopener">http://robot.local</a>.
       These only load while you're on the Pi's network.</p>
+    <p>To find the password, connect the Pi to your router with an Ethernet cable, find its IP address in the router's client list, and log in with <code>systemcore</code> / <code>systemcore</code>:</p>
+<pre><code>ssh systemcore@&lt;pi-ip-address&gt;
+grep -E '^(ssid|wpa_passphrase)=' /etc/hostapd.conf</code></pre>
+    <div class="note">The network is 5 GHz only. A laptop or Driver Station machine with 2.4 GHz-only Wi-Fi won't see it. The <code>brcmf_set_channel … fail, reason -52</code> messages on the Pi's screen at boot are harmless: they come from the Pi testing channels before it picks one.</div>
   </li>
 
   <li>
