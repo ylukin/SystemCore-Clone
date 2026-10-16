@@ -14,7 +14,7 @@ through the process of building and setting up your own Systemcore clone so you 
 developing and testing earlier.
 
 ## Assumptions
-- You will be expected to know how to copy / "burn" an image to an sd card using either balena etcher or raspberry pi. The instructions to do that are not in the scope of this guide. Burn the default "base" image on the main readme. 
+- You will be expected to know how to copy / "burn" an image to an sd card using either balena etcher or raspberry pi. The instructions to do that are not in the scope of this guide. Burn the default "base" image on the main readme (Limelight SystemCore beta17: `limelightsystemcorebetacm5-limelightosr-2027.0.0-beta17.zip`). 
 - You will be expected to know how to push files from your local device using SCP to the remote pi.
 
 
@@ -93,9 +93,11 @@ systemctl is-active can-bringup robot
     - CTRE
         - Open pheonix tuner application
         - Connect to the robot using dashboard or ip address
-        - Update the firmeware to the latest 2026 Phoenix version ( I know this is confusing as we are supposed to be on 2027 ).
+        - Update the firmware to match the Phoenix 6 API version used by the robot project (`26.70.0-alpha-2` in the examples). A mismatch shows up as "API too old / CAN frame too-stale" errors.
 
 - Deploy robot code
 
     - We've built some robot code for you that is an example project for both the Commands v2 and V3 frameworks. You can find the projects in the project_examples folder of this repo. Select the version that corresponds to your hardware. Deploy as normal.
+    - The examples target WPILib 2027.0.0-alpha-7 and the Limelight SystemCore beta17 image. Use the FIRST Driver Station alpha 7, and Elastic alpha 9 or newer to see the autonomous chooser.
+    - In code, the HAT buses are `new CANBus(CANPort.CAN_S0)` / `new CANBus(CANPort.CAN_S1)` (Phoenix 6 26.70 removed `CANBus.systemcore(n)`).
 

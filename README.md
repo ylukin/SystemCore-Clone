@@ -10,13 +10,20 @@ The following software is required to create, flash, and use the SystemCore imag
 Used to flash the operating system image to a microSD card.
 - https://www.raspberrypi.com/software/
 
-### WPILib 2027.0.0-alpha-6
-Required if you are using the latest WPILib beta release.
-- https://github.com/wpilibsuite/allwpilib/releases/tag/v2027.0.0-alpha-6
+### WPILib 2027.0.0-alpha-7
+Install on your development computer (not the Pi). The example projects target this release.
+- https://github.com/wpilibsuite/allwpilib/releases/tag/v2027.0.0-alpha-7
+
+Alpha 7 also requires the FIRST Driver Station alpha 7 and Elastic alpha 9 or newer.
 
 ### SystemCore Base Image
-This is the base os image used if you are preperaing or setting up your own image instead of using Bobcat's Prebuilt image
-- https://github.com/LimelightVision/systemcore-os-public/releases
+This is the base os image used if you are preperaing or setting up your own image instead of using Bobcat's Prebuilt image.
+Use the **beta** release and download the `limelightsystemcorebetacm5-*.zip` asset (the other assets are update payloads, the toolchain and kernel source).
+- Tested target: [beta17 (233)](https://github.com/LimelightVision/systemcore-os-public/releases/tag/limelightosr-2027.0.0-beta17-233) - `limelightsystemcorebetacm5-limelightosr-2027.0.0-beta17.zip`
+- All releases: https://github.com/LimelightVision/systemcore-os-public/releases
+
+### CTRE Phoenix 6
+The example projects use Phoenix 6 `26.70.0-alpha-2`, the 2027 build compatible with WPILib alpha 7.
 
 ### Canivore usb drivers
 This two driver files neeeded for the canivore usb.

@@ -75,8 +75,8 @@
       <small>Flashes the SD card.</small>
     </li>
     <li>
-      <a href="https://github.com/LimelightVision/systemcore-os-public/releases" target="_blank" rel="noopener">SystemCore base image (Limelight releases)</a>
-      <small>Download the latest <code>.img</code> / <code>.img.xz</code> asset.</small>
+      <a href="https://github.com/LimelightVision/systemcore-os-public/releases/tag/limelightosr-2027.0.0-beta17-233" target="_blank" rel="noopener">SystemCore base image: Limelight beta17 (233)</a>
+      <small>Download <code>limelightsystemcorebetacm5-limelightosr-2027.0.0-beta17.zip</code> (~810 MB). The other assets (<code>.llupdate</code>, toolchain, kernel source) are not flashable images.</small>
     </li>
     <li>
       <a href="https://ctre.download/files/systemcore/canivore-usb-kernel_1.18_aarch64.ipk">canivore-usb-kernel_1.18_aarch64.ipk</a>
@@ -87,8 +87,12 @@
       <small>CANivore driver 2 of 2. Only needed if you use a CANivore.</small>
     </li>
     <li>
-      <a href="https://github.com/wpilibsuite/allwpilib/releases/tag/v2027.0.0-alpha-6" target="_blank" rel="noopener">WPILib 2027.0.0-alpha-6</a>
-      <small>Needed later, to deploy robot code.</small>
+      <a href="https://packages.wpilib.workers.dev/installer/v2027.0.0-alpha-7/WPILib_macOS-Arm64-2027.0.0-alpha-7.dmg">WPILib 2027.0.0-alpha-7 for Mac (Arm)</a>
+      <small>Installs on your computer, not the Pi. Run <code>xcode-select --install</code> first. Other platforms: <a href="https://github.com/wpilibsuite/allwpilib/releases/tag/v2027.0.0-alpha-7" target="_blank" rel="noopener">release page</a>.</small>
+    </li>
+    <li>
+      FIRST Driver Station alpha 7, and Elastic alpha 9 or newer
+      <small>Required by WPILib alpha 7 (see its release notes).</small>
     </li>
     <li>
       <strong>This repo</strong> (cloned locally)
@@ -168,12 +172,12 @@ systemctl is-active can-bringup robot   # both should print "active"</code></pre
 
   <li>
     <h3>Update motor controller firmware</h3>
-    <p>In Phoenix Tuner X, connect to the robot and flash the <strong>2026</strong> Phoenix firmware. The repo says this is correct even though you're running 2027 alpha software.</p>
+    <p>In Phoenix Tuner X, connect to the robot and flash firmware that matches the Phoenix 6 API version in the project (<code>26.70.0-alpha-2</code> in the examples). A mismatch shows up as "API too old / CAN frame too-stale".</p>
   </li>
 
   <li>
     <h3>Deploy code</h3>
-    <p>Install <a href="https://github.com/wpilibsuite/allwpilib/releases/tag/v2027.0.0-alpha-6" target="_blank" rel="noopener">WPILib 2027.0.0-alpha-6</a>, open <code>project_examples/ctre/ctre-commands-v2</code> or <code>ctre-commands-v3</code>, and deploy as normal.</p>
+    <p>With WPILib alpha 7, open <code>project_examples/ctre/ctre-commands-v2</code> or <code>ctre-commands-v3</code> and deploy as normal. In code, the HAT buses are <code>new CANBus(CANPort.CAN_S0)</code> and <code>new CANBus(CANPort.CAN_S1)</code>.</p>
     <div class="note">Enable from the Driver Station's <strong>Enable</strong> button. Space and Enter are the e-stop and latch the robot disabled.</div>
   </li>
 
