@@ -23,6 +23,16 @@ On every boot, a oneshot service (`can-bringup.service` → `diy-can-setup.sh`):
 It also removes `robot_heartbeat` from `/etc/modules-load.d/` (where the stock image loads
 it too early).
 
+It also installs two systemd drop-ins so the stock image's services cope with the vcan dummies:
+
+- **`limelight_canbusprocess.service.d/diy.conf`** → `diy-canbusprocess.sh`. The stock service
+  sets a bitrate on every `can_s*` bus. On a vcan that fails (`RTNETLINK answers: Operation not
+  supported`), leaving `can_s2` **down** and restarting every 5 s — bouncing the physical
+  `can_s0`/`can_s1` each time. The replacement tunes only physical buses and keeps vcans up.
+- **`robot.service.d/diy.conf`**. The stock pre-start check waits for every bus to report
+  `state UP`, but vcans report `state UNKNOWN`, so each robot start printed `can_sX down` /
+  `could not find can bus interfaces` and waited 15 s. The drop-in accepts both states.
+
 ### With or without the pin board
 
 The script auto-detects per bus:
@@ -64,7 +74,7 @@ sudo reboot
 ```bash
 ip -br link show | grep can_s          # can_s0/can_s1 up; can_s2-4 present
 ls /dev/mrccan/                        # controldata controldataro enabledro matchinfo matchinforo
-systemctl is-active can-bringup robot  # both active
+systemctl is-active can-bringup limelight_canbusprocess robot  # all active
 ```
 Driving a motor: deploy your robot code, then **enable from the Driver Station** (Enable
 button — **not** Space/Enter, which are Emergency-Stop and latch the robot disabled).
@@ -84,6 +94,8 @@ interface's `rx_packets` climbs: `cat /sys/class/net/can_s0/statistics/rx_packet
 ```bash
 sudo systemctl disable --now can-bringup.service
 sudo rm /etc/systemd/system/can-bringup.service /usr/local/sbin/diy-can-setup.sh
+sudo rm /etc/systemd/system/limelight_canbusprocess.service.d/diy.conf \
+  /etc/systemd/system/robot.service.d/diy.conf /usr/local/sbin/diy-canbusprocess.sh
 sudo systemctl daemon-reload
 ```
 

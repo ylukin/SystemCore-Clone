@@ -159,7 +159,7 @@ sudo reboot</code></pre>
 <pre><code>cd ~/systemcore-can-fd-setup
 sudo ./install.sh
 sudo reboot</code></pre>
-    <p>This installs <code>can-bringup.service</code>: on each boot it names the HAT buses <code>can_s0</code> and <code>can_s1</code> at 1 Mbit, creates <code>can_s2</code> to <code>can_s4</code> as virtual buses, and loads <code>robot_heartbeat</code>.</p>
+    <p>This installs <code>can-bringup.service</code>: on each boot it names the HAT buses <code>can_s0</code> and <code>can_s1</code> at 1 Mbit, creates <code>can_s2</code> to <code>can_s4</code> as virtual buses, and loads <code>robot_heartbeat</code>. It also adds drop-ins so the stock <code>limelight_canbusprocess</code> and <code>robot</code> services stop failing on the virtual buses (otherwise <code>can_s2</code> stays down and the robot log repeats <code>can_sX down</code>).</p>
   </li>
 
   <li>
